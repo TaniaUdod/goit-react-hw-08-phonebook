@@ -4,8 +4,8 @@ import {
   selectContacts,
   selectError,
   selectIsLoading,
-} from '../redux/selectors';
-import { fetchContacts } from '../redux/operations';
+} from '../redux/contacts/selectors';
+import { fetchContacts } from '../redux/contacts/operations';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
