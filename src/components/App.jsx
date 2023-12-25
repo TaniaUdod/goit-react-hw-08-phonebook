@@ -1,57 +1,50 @@
-import { useEffect } from 'react';
+import { lazy, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectContacts,
-  selectError,
-  selectIsLoading,
-} from '../redux/contacts/selectors';
-import { fetchContacts } from '../redux/contacts/operations';
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactList } from './ContactList/ContactList';
-import { Filter } from './Filter/Filter';
+import { Route, Routes } from 'react-router-dom';
+import { refreshUser } from '../redux/auth/operations';
+import { Layout } from './Layout';
 import { Loader } from './Loader/Loader';
+import { PrivateRoute } from './PrivateRoute';
+import { PublicRoute } from './PublicRoute';
+import { selectIsRefreshing } from '../redux/auth/selectors';
+
+const Home = lazy(() => import('../pages/Home'));
+const Register = lazy(() => import('../pages/Register'));
+const Login = lazy(() => import('../pages/Login'));
+const Contacts = lazy(() => import('../pages/Contacts'));
 
 export const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
+  const isRefreshing = useSelector(selectIsRefreshing);
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refreshUser());
   }, [dispatch]);
 
-  return (
-    <section>
-      <h1>Phonebook</h1>
-      <ContactForm />
-      <div>
-        <h2>Contacts</h2>
-
-        {isLoading && <Loader />}
-
-        {contacts.length > 0 ? (
-          <Filter />
-        ) : (
-          <div style={{ textAlign: 'center', fontSize: '20px' }}>
-            Your phonebook is empty 🥺
-          </div>
-        )}
-
-        {contacts.length > 0 && <ContactList />}
-
-        {error && (
-          <p
-            style={{
-              textAlign: 'center',
-              marginTop: '20px',
-              fontSize: '28px',
-            }}
-          >
-            Sorry. {error} 😭
-          </p>
-        )}
-      </div>
-    </section>
+  return isRefreshing ? (
+    <Loader />
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute redirectTo="/contacts" component={<Register />} />
+          }
+        />
+        <Route
+          path="/login"
+          element={<PublicRoute redirectTo="/contacts" component={<Login />} />}
+        />
+        <Route
+          path="/contacts"
+          element={
+            <PrivateRoute redirectTo="/login" component={<Contacts />} />
+          }
+        />
+      </Route>
+      <Route path="*" element={<Home />} />
+    </Routes>
   );
 };

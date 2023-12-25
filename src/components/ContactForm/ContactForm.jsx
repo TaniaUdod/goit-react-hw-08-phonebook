@@ -28,7 +28,7 @@ export const ContactForm = () => {
       return;
     }
 
-    dispatch(addContact({ name: formName, phone: formNumber }));
+    dispatch(addContact({ name: formName, number: formNumber }));
 
     toast.success(`${formName} has been successfully added to your contacts!`, {
       theme: 'colored',
