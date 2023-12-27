@@ -11,7 +11,7 @@ export const Form = styled.form`
   border: 2px solid #d8d8e7;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  margin: 0 auto 20px;
+  margin: 28px auto 20px;
   gap: 20px;
 `;
 
